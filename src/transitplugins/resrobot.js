@@ -88,6 +88,8 @@ const WALK_SEARCH_RADIUS = 2000;
 // maximum distance for walk-only journey
 const MAX_WALK_ONLY_DISTANCE = 2500;
 
+const TOURIST_TRAIN_AGENCIES = new Set(['Lennakatten']);
+
 export class Resrobot {
     constructor(params) {
         this._session = new Soup.Session({ user_agent : 'gnome-maps/' + pkg.version });
@@ -437,6 +439,10 @@ export class Resrobot {
         let agencyName = isTransit ? product.operator : null;
         let polyline = this._createPolylineForLeg(leg);
         let duration = leg.duration ? this._parseDuration(leg.duration) : null;
+
+        if (routeType === HVT.REGIONAL_RAIL_SERVICE &&
+            TOURIST_TRAIN_AGENCIES.has(agencyName))
+            routeType = HVT.TOURIST_RAILWAY_SERVICE;
 
         let result = new Leg({ departure:            departure,
                                arrival:              arrival,
